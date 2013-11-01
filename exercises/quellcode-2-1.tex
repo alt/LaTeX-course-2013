@@ -1,0 +1,41 @@
+\documentclass[
+%	solution,
+	german,
+	blatt=2,
+	ausgabe=25.\,10.\,2013,
+	rückgabe=08.\,11.\,2013
+]{lcourse-hd}
+
+\usepackage{luacode}
+
+\begin{document}
+
+\begin{exercise}[name=Kerning und Ligaturen,punkte=4,abgabe = Hand- oder maschinenschriftliche Antwort zu den Fragen.]{kernlig}
+Die beiden untenstehenden Zeilen unterscheiden sich in zwei in der Vorlesung vorgestellten wichtigen typographischen Konzepten. Kennzeichnen bzw. nennen Sie Stellen, an denen diese Unterschiede deutlich hervortreten. Erläutern Sie weiterhin kurz, warum diese beiden Techniken überhaupt verwendet werden und wie sie den Lesefluss verbessern sollen:
+\\ \\
+In dieser Version des Textes wurde etwas abgeschafft, was vielen gar nicht auffiel.
+
+\addfontfeature{Ligatures=NoCommon}
+\begin{luacode}
+
+function nokern (head)
+    for n in node.traverse_id(11,head) do
+      n.kern = -n.kern
+    end
+  return head
+end
+
+luatexbase.add_to_callback("pre_linebreak_filter",nokern,"no kern")
+
+\end{luacode}
+
+In dieser Version des Textes wurde etwas abgeschafft, was vielen gar nicht auffiel.
+
+
+\begin{luacode}
+luatexbase.remove_from_callback("pre_linebreak_filter","no kern")
+\end{luacode}
+
+\end{exercise}
+
+\end{document}
