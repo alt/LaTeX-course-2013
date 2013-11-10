@@ -1,0 +1,365 @@
+\input{kursheader}
+
+\coursesetup{
+title=Formatieren und Definieren,
+subtitle=Teaching the Lion,
+number=03
+}
+\usepackage[xspace]{ellipsis}
+\MakeShortVerb{|}
+
+\begin{document}
+\section{Tips und Tricks für die Arbeit mit \TeX works}
+\begin{frame}[fragile]{\TeX works}{Nützliche Feinheiten}
+• Einstellung der möglichen Tools: \\%
+\texttt{Edit} ↦ \texttt{Preferences} ↦ \texttt{Typesetting}
+\pause
+• Autovervollständigung: Viele Befehle sind bekannt und können vervollständigt werden:\\
+|\doc <tab>| ⇒ |\documentclass{}|\\
+|bit <tab>| ⇒ |\begin{itemize} \end{itemize}|
+• bei Mehrdeutigkeit: mehrmals |<tab>| drücken
+• Einstellbar über Datei |tw-latex.txt|, meist im Nutzerordner unter |./TeXworks/completion/tw-latex.txt|
+\•
+\end{frame}
+
+\section{Der Satzspiegel}
+\begin{frame}{Formatierung: Makrotypographie}
+• „globale“ Typographie:
+• Satzspiegel
+• Gestaltung von Kopf- und Fußzeilen 
+• Wahl der Schriften
+• Formatierung von Abständen u.\,ä.
+• Inhaltsverzeichnis, Indizes, Verzeichnisse …
+\• 
+\end{frame}
+
+
+\begin{frame}{Der Satzspiegel}
+Bezeichnet alles, was auf der Seite zum Bedrucken genutzt wird:
+• Verhältnis von Rändern zu Textbreiten
+• ein- oder zweiseitiger Satz
+• ein- oder mehrspaltiger Satz
+• Kopf- und Fußzeilen
+• Satzspiegel abhängig von Schriftgröße und Laufweite, für ein harmonisches Bild\pause
+\•
+Leider ist der Satzspiegel meist (vom Herausgeber, Professor, …) vorgegeben, oft mit typographisch fragwürdigen Einstellungen – zu kleine oder unpassende Ränder, unharmonische Seitenaufteilung etc.
+\end{frame}
+
+\begin{frame}{Satzspiegel mit KOMA}
+Als Alternative zu den Standardklassen bietet das KOMA-Skript (Hauptautor Markus Kohm):
+• optimale Satzspiegelkonstruktion
+• mit dem speziellen Paket |typearea|
+• automatische Berechnung (Paket laden, fertig)
+• anpassbar für Spezialfälle (z.\,B. mittelalterliche Satzspiegelkonstruktion)\pause
+\• 
+Falls das alles nicht gefällt: freie Anpassung aller Dimensionen mittels |geometry| (unabhängig von KOMA)
+\end{frame}
+
+\begin{frame}[fragile]{Das Paket |geometry|}
+• erlaubt manuelle Einstellung des Satzspiegels
+• alle Parameter werden mittels Paketoption angegeben:\\%
+|\usepackage[top=2cm,bottom=5cm]{geometry}|
+• \emph{oder} mittels |\geometry{top=2cm,bottom=5cm}|
+• mittels |\newgeometry| kann der Satzspiegel geändert werden
+• |\restoregeometry| stellt vorherige Einstellungen wieder her
+• |\savegeometry{}| und |\loadgeometry{}| erlauben Speichern und Laden von Einstellungen
+\•
+\end{frame}
+
+\begin{frame}[fragile]{Das Paket |geometry|}
+\begin{block}{Mögliche Optionen (kleine Auswahl):}
+\begin{verbatim}
+paperheight, paperwidth
+left, right, inner, outer, hmargin
+top, bottom, vmargin
+bindingoffset, textwidth, textheight
+twoside, twocolumn, columnsep
+marginparsep, footnotesep, headsep, footsep, nofoot, nohead
+hoffset, voffset, offset
+\end{verbatim}
+\vdots 
+⇒ siehe |texdoc geometry| für ausführliche Beschreibung und Dokumentation
+\end{block}
+\end{frame}
+
+\section{Kopf- und Fußzeilen}
+\begin{frame}[fragile]{Kopf- und Fußzeilen}
+• Enthalten wichtige Informationen über das Dokument:
+• Lebende Kolumnentitel (Kapitel-/ Abschnittsüberschriftend)
+• Seitenzahlen
+• evtl. kleine Verzierungen, Schnörkel, …
+\•
+\pause
+
+• Verschiedene Pakete erlauben Anpassungen
+• Auswahl des Seitenstils mittels\\%
+|\pagestyle{Seitenstil}| (für alle Seiten) oder\\%
+ |\thispagestyle{Seitenstil}| (nur diese Seite)
+• Voreinstellungen im \LaTeX-Kernel:\\%
+ |empty|, |plain|, |headings|
+\•
+\end{frame}
+
+\begin{frame}[fragile]{Seitenstil mit KOMA: |scrpage2|}
+\begin{lstlisting}
+\usepackage[automark]{scrpage2}
+\pagestyle{scrheadings} %% entweder scrheadings oder scrplain
+\pagestyle{scrplain} %%    muss aktiviert werden
+\lehead[scrplain-links-gerade]{scrheadings-links-gerade}
+\cohead[scrplain-zentriert-ungerade]{scrheadings-z-u}
+\rehead[]{}
+\cefoot[]{}
+\ohead[]{\pagemark}
+\ihead{\headmark}
+\cfoot{}
+\end{lstlisting}
+⇒ siehe |texdoc scrguide|
+\end{frame}
+
+\begin{frame}[fragile]{Seitenstil anpassen mit |fancyhdr|}
+Laden des Pakets und Einstellungen im Dokumentenkopf:
+\begin{lstlisting}
+\usepackage{fancyhdr}
+\pagestyle{fancy} %% ohne das funktioniert nichts
+\end{lstlisting}
+\begin{columns}
+\begin{column}{.4\textwidth}
+Einseitiger Satz:
+\begin{lstlisting}
+\lhead{}    \lfoot{}
+\chead{}    \cfoot{}
+\rhead{}    \rfoot{}
+\end{lstlisting}
+\end{column}
+\pause
+\begin{column}{.4\textwidth}
+Zweiseitiger Satz (Odd, Even)
+\begin{lstlisting}
+\fancyhead[LO]{}
+\fancyhead[RO,LE]{}
+\fancyhead[CE]{}
+\fancyfoot[LO]{}
+\fancyfoot[RO,LE]{}
+\fancyfoot[CE]{}
+\end{lstlisting}
+\end{column}
+\end{columns}
+\end{frame}
+
+\section{Schriftgrößen}
+\begin{frame}[fragile]{Schriftgrößen}
+\begin{block}{Dokumentoption}
+Fast alle Klassen bieten Optionen für die Standardschriftgröße:\\
+|\documentclass[10pt]{scrartcl}|
+\end{block}
+
+\begin{block}{abgeleitete Größen}
+Davon abgeleitet sind alle anderen Größen (|\tiny|, |\small|, … ), speziell |\footnotesize| und |\scriptsize|.\\
+⇒ vordefinierte Schriftgrößen erlauben konsistentes Layout.
+\end{block}
+\pause
+Wer wirklich \emph{genau weiß}, was er tut:
+\begin{verbatim}
+\fontsize{Größe}{Durchschuss}\selectfont
+\fontsize{10}{12}\selectfont
+\end{verbatim}
+\end{frame}
+
+\section{Typographie: Leerzeichen, Striche}
+\begin{frame}[fragile]{Typographisch korrekte Strichlängen}
+\begin{block}{Leerzeichen und Striche}
+Je nach Zweck, Position und Bedeutung werden verschiedene horizontale Striche und Leerräume verwendet.
+\end{block}
+\pause
+• Grammatik und Lesbarkeit bestimmen die nötige Strichlänge
+• Zu unterscheiden:
+• Viertelgeviertstrich oder Bindestrich: |-|
+• Halbgeviertstrich oder Gedankenstrich: |--| –
+• Geviertstrich oder englischer Gedankenstrich: |---| —
+• Minuszeichen: |$-$| $-$
+• Im Vergleich:\huge%
+\\ |- -- --- $- +$| {\normalsize (Eingabe, falls keine Unicodeeingabe)}%
+\\ - – — $- +$ {\normalsize (Ausgabe)}%
+\•
+\end{frame}
+
+\begin{frame}[fragile]{Typographisch korrekte Strichlängen}
+\begin{block}{Verwendung}
+Vorder- und Rückseite \dots\\
+Vorderseite – oder auch Rückseite – \dots\\
+frontmatter—or backmatter— \dots\\
+Längen/Zeitangaben: Düsseldorf\,–\,Koblenz; 18–20\,Uhr\\%
+Unterschiedliche Empfehlungen für das Setzen von Spatia (kleine Leerzeichen, siehe unten)
+\end{block}
+\end{frame}
+
+\begin{frame}[fragile]{Leerräume}
+• normales Leerzeichen: \verb*| |, erzwungenes Leerzeichen: \verb*|\ |, nichttrennbares Leerzeichen: |~|
+• schmales Leerzeichen (Spatium): |\,|
+• negativer Abstand: |\!|\\%
+ vergleiche normal, schmal, negativ: z. B., z.\,B., z.\!B.
+• großer Abstand (Geviert) |\emspace|
+• beliebiger Platz: |\hspace(*){2em}|
+• Leerräume im Mathemodus:%
+\\ (werden normal automatisch korrekt gesetzt)%
+\\ |$a b = a\, b = a \! b$|
+\\ $a b = a\, b = a \! b$%
+\pause
+• Explizites Ändern des Abstandes (kerning):%
+\\ |a\kern-0.1em b| ⇒ a\kern-0.1em b \notiz{Mögliche Maße an der Tafel}%
+\\ |a\kern-0.5em b| ⇒ a\kern-0.5em b 
+\• 
+\end{frame}
+
+\begin{frame}[fragile]{Auslassungen}
+Auslassungspunkte sollten gesperrt gesetzt werden:
+\\... (falsch) \\\ldots (richtig)
+\\ Wenn ganze Satzteile \ldots %% FIXME: Dank otf tut das nicht mehr. WTF?
+\\ ausgelassen werden \ldots\ setzt man Leerzeichen.
+\\ Wenn Wortteile ausgelassen werden, kommt kein Leer\dots\ davor.
+\\[2em]
+Befehle |\dots| oder |\ldots| sorgen für richtige Abstände.\\
+Paket |ellipsis| korrigiert den Abstand vor und nach Ellipsen.\\
+\alert{Achtung, fontspec:} bei Verwendung von \textsf{fontspec} \emph{muss} das \textsf{ellipsis}-Paket (\emph{nach} \textsf{fontspec}) geladen werden, da sonst falsche Abstände resultieren.\pause
+\begin{block}{Pro-Tip}
+Ausnutzen aktiver Zeichen (nur mit Vorsicht!)
+\begin{verbatim}
+\catcode`…=13
+\let…\dots
+\end{verbatim}
+\end{block}
+\end{frame}
+
+\begin{frame}[fragile]{Probleme mit |ellipsis|}
+|\usepackage{ellipsis}| führt zu inkonsistenten Abständen nach |\dots|:
+\begin{lstlisting}
+\LaTeX ist \dots manchmal kompliziert \dots
+\end{lstlisting}
+\LaTeX ist \dots{}manchmal kompliziert \dots
+\\[1em]\pause
+|\usepackage[xspace]{ellipsis}| korrigiert dies:
+\begin{lstlisting}
+\LaTeX\ ist \dots manchmal kompliziert \dots
+\end{lstlisting}
+\LaTeX\ ist \dots\ manchmal kompliziert \dots
+\end{frame}
+
+\section{Dokumentation lesen und verstehen}
+\begin{frame}[fragile]{Welche Befehle möglich?}
+• Woher weiß man, welche Befehle |ellipsis| oder |geometry| bieten?
+• Welche Einstellungen haben die KOMA-Klassen?
+• Wie bekommt man allgemein Informationen über Pakete\,/\,Klassen?
+\•
+\end{frame}
+
+\begin{frame}[fragile]{Dokumentationen mittels texdoc}
+• |texdoc| durchsucht die \LaTeX-Ordner
+• liefert direkt die Dokumentation des gesuchten Paketes:
+• |texdoc amsmath| öffnet |amsmath.pdf|
+• |texdoc -l amsmath| listet alle Ergebnisse auf
+• |texdoc -s amsmath| liefert Ergebnisse aus erweiterter Suche
+• |texdoc --help| bietet weitere Informationen%
+\•
+⇒ Vorteile der Kommandozeile\\[2em]
+|texdoctk| bietet graphische Oberfläche mit Auswahlmenüs – gut zum „Blättern“, wenn man nicht weiß, was man sucht.
+\end{frame}
+
+\section{Befehle und Umgebungen definieren}
+\begin{frame}[fragile]{Makros}
+• Abkürzungen, die das Leben erleichtern
+• \LaTeX\ definiert große Zahl von Makros vor
+• Klassen und Pakete erweitern die Möglichkeiten immens
+• für den Eigenbedarf kann der Nutzer selbst neue Makros definieren
+• Makros nehmen Argumente an, die mandatorisch oder optional sein können.
+• Argumente sind einzelne Zeichen (genauer, Token) oder Gruppen |{abc}| in geschweiften Klammern.
+• Optionale Argumente meist in eckigen Klammern, aber Paketautoren sind kreativ: runde, spitze Klammern u.\,ä. kommt vor.
+\•
+\end{frame}
+
+\begin{frame}[fragile]{Neue Befehle mit |xparse|}
+• \alert{\LaTeX3} bietet durch das |xparse|-Paket hervorragende Syntax für neue Befehle
+• für \emph{Dokumentenebene} geeignet (also Paketautoren und Dokumentautoren)
+• |\NewDocumentCommand\cmd{args}{def}|
+• Makro ohne Argumente:\\ 
+|\NewDocumentCommand\cmd{}{Code}| setzt den angegbenen Code.\pause
+• ein Argument:\\
+|\NewDocumentCommand\cmd{m}{Text: #1}|
+• |m| für |mandatory| – muss vorhanden sein.
+• Argument kann mittels |#1| verwendet werden.
+\•
+\end{frame}
+
+\begin{frame}[fragile]{Argumenttypen in |xparse| (Auswahl)}
+\begin{description}
+\item[m] mandatory – muss gegeben werden, in geschweiften Klammern
+\item[o] optional – kann vorhanden sein oder nicht, in eckigen Klammern
+\item[O\{default\}] dito, mit Voreinstellung
+\item[d<>] delimiter – ebenfalls optional, mit den angegebenen Begrenzungen |\cmd<a>|
+\item[D()\{default\}] dito, mit Voreinstellung, und Begrenzenungen |()|
+\item[g/G] Spezialfall für |d/D{}|
+\item[t\{X\}] testet, ob das Token |X| an der angegeben Stelle steht. (boolean)
+\item[s] Sternversion, Spezialfall von |t{*}|
+\item[u\{X\}] liest ein Argument bis (until) dem angegebenen Token ein, mandatorisch
+\item[l] liest bis zur ersten öffnenden |{|, mandatorisch
+\end{description}
+\end{frame}
+
+\begin{frame}[fragile]{Neue Befehle „aus dem Antiquariat“}
+• \TeX-Basisbefehl zum definieren neuer Makros: |\def|
+• \LaTeX\ definiert flexiblere Definitionen mit speziellen Absicherungen
+• \LaTeXe: |\newcommand|, |\renewcommand| und |\declarecommand|
+\•
+|\newcommand[args]\name{definition}|\\
+|\newcommand[opt][2]\mycommand{#1, #2}|\\
+|\mycommand{ab}{cd}| → ab, cd
+\end{frame}
+
+\begin{frame}[fragile]{Leerzeichen in \TeX}
+\parbox{.12\textwidth}{\alert{Achtung:}\\ \includegraphics[width=1.4cm]{lion_colour}}
+\TeX\ „frisst“ gerne Leerzeichen – vor allem nach Befehlen:\\
+|\wasser ist nass| ⇒ H$_2$Oist nass.
+
+\pause
+•<+-> \TeX\ liest Befehle vom |\ | bis zum ersten nicht-Buchstaben%
+\\ (Zahl, Klammer, Leerzeichen, Punkt, \dots)
+\\ \verb|\LaTeX   ist  manchmal   umständlich|
+•<+-> Befehle im Text immer mit |\| oder |{}| beenden:
+•<+-> \verb|\LaTeX\ ist manchmal umständlich.|
+\•
+\begin{block}{}\centerline{
+\only<2-3>{\LaTeX ist manchmal umständlich}
+\only<4->{\LaTeX\ ist manchmal umständlich}}
+\end{block}
+\pause
+⇒ um konsistent zu werden, ignoriert \LaTeX3 auf Paketebene \emph{alle} Leerzeichen!
+\end{frame}
+
+\begin{frame}[fragile]{xspace}
+• Bei selbstdefinierten Befehlen: |\xspace| aus |xspace|
+• |\NewDocumentCommand\wasser{}{H₂O\xspace}|%
+• |\xspace| fügt Leerzeichen da ein, wo es sinnvoll ist, lässt es aber weg, wo es nicht hingehört.\\
+⇒ ganz gewöhnliches Schreiben ist möglich.\pause
+•[⇒] |\wasser ist nass. \wasser, gefroren, ist nicht nass.|%
+\NewDocumentCommand\wasser{}{H₂O\xspace}%
+•[⇒] \wasser ist nass. \wasser, gefroren, ist nicht nass.\pause
+• Für Spezialfälle (besondere Satzzeichen, Sonderzeichen, ?...):\\%
+ Anpassung möglich mittels |\xspaceaddexceptions{|ℵ|}|%
+\xspaceaddexceptions{ℵ}%
+\\ ⇒ |\wasser |ℵ ⇒  \wasser ℵ
+\•
+\end{frame}
+
+\begin{frame}[fragile]{Low Level: def}
+• \TeX\ kennt nur den primitiven Befehl |\def|
+• \alert{low level ⇒ Vorsicht!}
+• |xparse| definiert |\NewDocumentCommand| aus guten Gründen!\\ (schützt vor Überschreiben)
+• für spezielle Ansprüche kann |\def| aber nützlich sein:
+\•
+
+\begin{lstlisting}
+\def\dosomething#1#2xyz#3{some code}
+\end{lstlisting}
+(mit |xparse| auch möglich, aber längere Definition)
+\end{frame}
+
+\end{document}
